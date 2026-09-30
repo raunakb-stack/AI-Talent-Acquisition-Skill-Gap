@@ -1,0 +1,313 @@
+{
+  "kpis": {
+    "total_candidates": 8,
+    "total_jobs": 4,
+    "total_applications": 10,
+    "avg_match_score": 74.39
+  },
+  "skill_demand": [
+    {
+      "skill_name": "SQL",
+      "jobs_requiring": 4,
+      "avg_weight": 23.75
+    },
+    {
+      "skill_name": "Python",
+      "jobs_requiring": 2,
+      "avg_weight": 27.5
+    },
+    {
+      "skill_name": "Machine Learning",
+      "jobs_requiring": 2,
+      "avg_weight": 32.5
+    },
+    {
+      "skill_name": "Power BI",
+      "jobs_requiring": 2,
+      "avg_weight": 30.0
+    },
+    {
+      "skill_name": "Java",
+      "jobs_requiring": 1,
+      "avg_weight": 40.0
+    },
+    {
+      "skill_name": "React",
+      "jobs_requiring": 1,
+      "avg_weight": 30.0
+    },
+    {
+      "skill_name": "Excel",
+      "jobs_requiring": 1,
+      "avg_weight": 30.0
+    },
+    {
+      "skill_name": "Deep Learning",
+      "jobs_requiring": 1,
+      "avg_weight": 25.0
+    }
+  ],
+  "skill_gap_summary": [
+    {
+      "skill_name": "SQL",
+      "times_missing": 4
+    },
+    {
+      "skill_name": "Power BI",
+      "times_missing": 3
+    },
+    {
+      "skill_name": "Deep Learning",
+      "times_missing": 2
+    },
+    {
+      "skill_name": "Java",
+      "times_missing": 2
+    },
+    {
+      "skill_name": "Machine Learning",
+      "times_missing": 1
+    },
+    {
+      "skill_name": "React",
+      "times_missing": 1
+    },
+    {
+      "skill_name": "Excel",
+      "times_missing": 1
+    }
+  ],
+  "applicants_per_job": [
+    {
+      "job_title": "Data Scientist",
+      "num_applicants": 3
+    },
+    {
+      "job_title": "Backend Developer",
+      "num_applicants": 3
+    },
+    {
+      "job_title": "BI Analyst",
+      "num_applicants": 2
+    },
+    {
+      "job_title": "ML Engineer",
+      "num_applicants": 2
+    }
+  ],
+  "top_candidates": [
+    {
+      "application_id": 2,
+      "candidate": "Sneha Patil",
+      "job_id": 1,
+      "job_title": "Data Scientist",
+      "skill_match_pct": 100.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 90,
+      "match_score": 98.5,
+      "skill_gaps": [],
+      "rank": 1
+    },
+    {
+      "application_id": 10,
+      "candidate": "Sneha Patil",
+      "job_id": 4,
+      "job_title": "ML Engineer",
+      "skill_match_pct": 87.5,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 90,
+      "match_score": 90.38,
+      "skill_gaps": [
+        "Deep Learning"
+      ],
+      "rank": 1
+    },
+    {
+      "application_id": 1,
+      "candidate": "Rahul Verma",
+      "job_id": 1,
+      "job_title": "Data Scientist",
+      "skill_match_pct": 80.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 92,
+      "match_score": 85.8,
+      "skill_gaps": [
+        "Power BI"
+      ],
+      "rank": 2
+    },
+    {
+      "application_id": 9,
+      "candidate": "Rahul Verma",
+      "job_id": 4,
+      "job_title": "ML Engineer",
+      "skill_match_pct": 75.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 92,
+      "match_score": 82.55,
+      "skill_gaps": [
+        "Deep Learning"
+      ],
+      "rank": 2
+    },
+    {
+      "application_id": 7,
+      "candidate": "Priya Iyer",
+      "job_id": 3,
+      "job_title": "BI Analyst",
+      "skill_match_pct": 70.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 88,
+      "match_score": 78.7,
+      "skill_gaps": [
+        "SQL"
+      ],
+      "rank": 1
+    }
+  ],
+  "all_rankings": [
+    {
+      "application_id": 1,
+      "candidate": "Rahul Verma",
+      "job_id": 1,
+      "job_title": "Data Scientist",
+      "skill_match_pct": 80.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 92,
+      "match_score": 85.8,
+      "skill_gaps": [
+        "Power BI"
+      ],
+      "rank": 2
+    },
+    {
+      "application_id": 2,
+      "candidate": "Sneha Patil",
+      "job_id": 1,
+      "job_title": "Data Scientist",
+      "skill_match_pct": 100.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 90,
+      "match_score": 98.5,
+      "skill_gaps": [],
+      "rank": 1
+    },
+    {
+      "application_id": 3,
+      "candidate": "Neha Joshi",
+      "job_id": 1,
+      "job_title": "Data Scientist",
+      "skill_match_pct": 65.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 82,
+      "match_score": 74.55,
+      "skill_gaps": [
+        "Machine Learning",
+        "Power BI"
+      ],
+      "rank": 3
+    },
+    {
+      "application_id": 4,
+      "candidate": "Amit Kulkarni",
+      "job_id": 2,
+      "job_title": "Backend Developer",
+      "skill_match_pct": 70.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 80,
+      "match_score": 77.5,
+      "skill_gaps": [
+        "React"
+      ],
+      "rank": 1
+    },
+    {
+      "application_id": 5,
+      "candidate": "Karan Mehta",
+      "job_id": 2,
+      "job_title": "Backend Developer",
+      "skill_match_pct": 65.0,
+      "experience_fit_pct": 75.0,
+      "education_fit_pct": 70,
+      "match_score": 67.75,
+      "skill_gaps": [
+        "SQL",
+        "Java"
+      ],
+      "rank": 2
+    },
+    {
+      "application_id": 6,
+      "candidate": "Vikas Rao",
+      "job_id": 2,
+      "job_title": "Backend Developer",
+      "skill_match_pct": 45.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 75,
+      "match_score": 60.5,
+      "skill_gaps": [
+        "SQL",
+        "Java"
+      ],
+      "rank": 3
+    },
+    {
+      "application_id": 7,
+      "candidate": "Priya Iyer",
+      "job_id": 3,
+      "job_title": "BI Analyst",
+      "skill_match_pct": 70.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 88,
+      "match_score": 78.7,
+      "skill_gaps": [
+        "SQL"
+      ],
+      "rank": 1
+    },
+    {
+      "application_id": 8,
+      "candidate": "Suresh Pawar",
+      "job_id": 3,
+      "job_title": "BI Analyst",
+      "skill_match_pct": 15.0,
+      "experience_fit_pct": 33.33,
+      "education_fit_pct": 75,
+      "match_score": 27.67,
+      "skill_gaps": [
+        "SQL",
+        "Power BI",
+        "Excel"
+      ],
+      "rank": 2
+    },
+    {
+      "application_id": 9,
+      "candidate": "Rahul Verma",
+      "job_id": 4,
+      "job_title": "ML Engineer",
+      "skill_match_pct": 75.0,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 92,
+      "match_score": 82.55,
+      "skill_gaps": [
+        "Deep Learning"
+      ],
+      "rank": 2
+    },
+    {
+      "application_id": 10,
+      "candidate": "Sneha Patil",
+      "job_id": 4,
+      "job_title": "ML Engineer",
+      "skill_match_pct": 87.5,
+      "experience_fit_pct": 100.0,
+      "education_fit_pct": 90,
+      "match_score": 90.38,
+      "skill_gaps": [
+        "Deep Learning"
+      ],
+      "rank": 1
+    }
+  ]
+}

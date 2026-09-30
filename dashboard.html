@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HR Talent Acquisition Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1420; --card:#161d2e; --card2:#1c2438; --border:#2a3350;
+    --text:#e8ecf6; --muted:#8b93ab; --accent:#5b8cff; --accent2:#33d1a3;
+    --warn:#ff8a5c; --crit:#ff5c7a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);padding:28px;}
+  h1{font-size:22px;margin:0 0 4px;}
+  .subtitle{color:var(--muted);font-size:13px;margin-bottom:24px;}
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+  .kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+  .kpi .label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em;}
+  .kpi .value{font-size:28px;font-weight:700;margin-top:6px;} .full-error{grid-column:1 / -1;} code{color:var(--accent2);}
+  .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;margin-bottom:16px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+  .card h2{font-size:14px;margin:0 0 12px;color:var(--text);}
+  .full{grid-column:1 / -1;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border);}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;}
+  .rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;margin-right:8px;}
+  .score{font-weight:700;}
+  .score.high{color:var(--accent2);}
+  .score.mid{color:var(--warn);}
+  .score.low{color:var(--crit);}
+  .gap-tag{display:inline-block;background:rgba(255,92,122,.15);color:var(--crit);border:1px solid rgba(255,92,122,.35);border-radius:6px;padding:2px 7px;font-size:11px;margin:2px 3px 0 0;}
+  .none-tag{color:var(--muted);font-size:12px;}
+  select{background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;}
+  canvas{max-height:260px;}
+</style>
+</head>
+<body>
+
+<h1>HR Talent Acquisition Dashboard</h1>
+<div class="subtitle">AI-Based Talent Acquisition &amp; Skill Gap Analytics Platform — live view of candidate ranking &amp; skill-gap output</div>
+
+<div class="kpi-row" id="kpiRow"></div>
+
+<div class="grid">
+  <div class="card">
+    <h2>📊 Most Demanded Skills (open jobs)</h2>
+    <canvas id="skillDemandChart"></canvas>
+  </div>
+  <div class="card">
+    <h2>⚠️ Top Skill Gaps</h2>
+    <canvas id="skillGapChart"></canvas>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>💼 Applicants per Job</h2>
+    <canvas id="applicantsChart"></canvas>
+  </div>
+  <div class="card">
+    <h2>🏆 Top 5 Candidates (overall)</h2>
+    <table>
+      <thead><tr><th>Candidate</th><th>Job</th><th>Score</th></tr></thead>
+      <tbody id="topCandidatesBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card full">
+  <h2 style="display:flex;justify-content:space-between;align-items:center;">
+    <span>👥 Candidate Ranking &amp; Skill-Gap Detail</span>
+    <select id="jobFilter"></select>
+  </h2>
+  <table>
+    <thead><tr><th>#</th><th>Candidate</th><th>Skill Match</th><th>Experience Fit</th><th>Education Fit</th><th>Overall Score</th><th>Skill Gaps</th></tr></thead>
+    <tbody id="rankingBody"></tbody>
+  </table>
+</div>
+
+<script>
+let DATA = null;
+let charts = [];
+
+function scoreClass(s){ return s>=80?'high':(s>=55?'mid':'low'); }
+
+function showError(message){
+  document.getElementById('kpiRow').innerHTML = `<div class="kpi full-error"><div class="label">Backend connection</div><div class="value" style="font-size:16px;">${message}</div><div style="color:var(--muted);font-size:12px;margin-top:8px;">Start FastAPI with <code>uvicorn app:app --reload --port 8000</code> and check MySQL.</div></div>`;
+}
+
+function renderDashboard(data){
+  DATA = data;
+
+  // KPIs
+  const kpiRow = document.getElementById('kpiRow');
+  const kpis = [
+    {label:'Total Candidates', value: DATA.kpis.total_candidates},
+    {label:'Total Jobs', value: DATA.kpis.total_jobs},
+    {label:'Applications', value: DATA.kpis.total_applications},
+    {label:'Avg Match Score', value: DATA.kpis.avg_match_score + '%'},
+  ];
+  kpiRow.innerHTML = kpis.map(k => `<div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div></div>`).join('');
+
+  // Destroy old charts if refresh/recalculate is used.
+  charts.forEach(c => c.destroy());
+  charts = [];
+
+  Chart.defaults.color = '#8b93ab';
+  Chart.defaults.borderColor = '#2a3350';
+
+  charts.push(new Chart(document.getElementById('skillDemandChart'), {
+    type: 'bar',
+    data: {
+      labels: DATA.skill_demand.map(d => d.skill_name),
+      datasets: [{ label: 'Jobs requiring', data: DATA.skill_demand.map(d => d.jobs_requiring), backgroundColor: '#5b8cff', borderRadius: 6 }]
+    },
+    options: { responsive:true, plugins:{legend:{display:false}}, scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } } }
+  }));
+
+  charts.push(new Chart(document.getElementById('skillGapChart'), {
+    type: 'bar',
+    data: {
+      labels: DATA.skill_gap_summary.map(d => d.skill_name),
+      datasets: [{ label: 'Times missing', data: DATA.skill_gap_summary.map(d => d.times_missing), backgroundColor: '#ff5c7a', borderRadius: 6 }]
+    },
+    options: { responsive:true, indexAxis: 'y', plugins:{legend:{display:false}}, scales:{ x:{ beginAtZero:true, ticks:{ stepSize:1 } } } }
+  }));
+
+  charts.push(new Chart(document.getElementById('applicantsChart'), {
+    type: 'doughnut',
+    data: {
+      labels: DATA.applicants_per_job.map(d => d.job_title),
+      datasets: [{ data: DATA.applicants_per_job.map(d => d.num_applicants), backgroundColor: ['#5b8cff','#33d1a3','#ff8a5c','#c792ea'] }]
+    },
+    options: { responsive:true, plugins:{legend:{position:'bottom', labels:{boxWidth:10}}} }
+  }));
+
+  // Top candidates
+  document.getElementById('topCandidatesBody').innerHTML = DATA.top_candidates.map((c,i) => `
+    <tr>
+      <td><span class="rank">${i+1}</span>${c.candidate}</td>
+      <td>${c.job_title}</td>
+      <td class="score ${scoreClass(c.match_score)}">${c.match_score}%</td>
+    </tr>`).join('');
+
+  // Job filter + ranking detail table
+  const jobFilter = document.getElementById('jobFilter');
+  const currentFilter = jobFilter.value || '__all';
+  const jobTitles = [...new Set(DATA.all_rankings.map(r => r.job_title))];
+  jobFilter.innerHTML = '<option value="__all">All Jobs</option>' + jobTitles.map(j => `<option value="${j}">${j}</option>`).join('');
+  jobFilter.value = jobTitles.includes(currentFilter) ? currentFilter : '__all';
+  renderRankingTable(jobFilter.value);
+}
+
+function renderRankingTable(filter){
+  if (!DATA) return;
+  const rows = DATA.all_rankings
+    .filter(r => filter === '__all' || r.job_title === filter)
+    .sort((a,b) => (a.job_title.localeCompare(b.job_title)) || (a.rank - b.rank));
+  document.getElementById('rankingBody').innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.rank}</td>
+      <td>${r.candidate} <span style="color:var(--muted);font-size:11px;">(${r.job_title})</span></td>
+      <td>${r.skill_match_pct}%</td>
+      <td>${r.experience_fit_pct}%</td>
+      <td>${r.education_fit_pct}%</td>
+      <td class="score ${scoreClass(r.match_score)}">${r.match_score}%</td>
+      <td>${ r.skill_gaps.length ? r.skill_gaps.map(g=>`<span class="gap-tag">${g}</span>`).join('') : '<span class="none-tag">None</span>' }</td>
+    </tr>`).join('');
+}
+
+async function loadDashboard(){
+  try {
+    const response = await fetch('/api/dashboard', {cache:'no-store'});
+    const body = await response.json();
+    if (!response.ok) throw new Error(body.detail || `HTTP ${response.status}`);
+    renderDashboard(body);
+  } catch (error) {
+    console.error(error);
+    showError(error.message);
+  }
+}
+
+document.getElementById('jobFilter').addEventListener('change', e => renderRankingTable(e.target.value));
+loadDashboard();
+</script>
+</body>
+</html>
